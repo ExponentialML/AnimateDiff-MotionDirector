@@ -1,4 +1,4 @@
-# AnimateDiff MotionDirector (DiffDirector) WIP ⚠️
+# AnimateDiff MotionDirector (DiffDirector)
 
 *Training video*           |  *Output video*
 :-------------------------:|:-------------------------:
