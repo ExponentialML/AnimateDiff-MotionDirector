@@ -40,7 +40,7 @@ video:
   validation_prompt: "a highly realistic video of batman running in a mystic forest, depth of field, epic lights, high quality, trending on artstation"
 
 # The name of the LoRA file (will save to ./results/{save_name}...)
-save_name: "dog_jump"
+save_name: "man_running"
 
 # Quality
 # Quality of training: ["low", "preferred", "best"]
