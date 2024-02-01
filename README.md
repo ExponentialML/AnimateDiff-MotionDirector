@@ -1,5 +1,11 @@
 # AnimateDiff MotionDirector (DiffDirector) WIP ⚠️
 
+*Training video*           |  *Output video*
+:-------------------------:|:-------------------------:
+![myimage](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/b4e2c1d5-d33b-47dc-b106-9836737d3bd2) | ![myimage](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/b61b7919-2c9b-4556-aff9-4c15bb60ebf3)
+
+*a highly realistic video of batman running in a mystic forest, depth of field, epic lights, high quality, trending on artstation*
+
 This repository is an implementation of [MotionDirector](https://github.com/showlab/MotionDirector) for [AnimateDiff](https://arxiv.org/abs/2307.04725).
 
 AnimateDiff is a plug-and-play module turning most community models into animation generators, without the need of additional training.
