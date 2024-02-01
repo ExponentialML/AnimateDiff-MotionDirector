@@ -1,49 +1,29 @@
-# AnimateDiff
+# AnimateDiff MotionDirector (DiffDirector) WIP ⚠️
 
-This repository is the official implementation of [AnimateDiff](https://arxiv.org/abs/2307.04725).
-It is a plug-and-play module turning most community models into animation generators, without the need of additional training.
+This repository is an implementation of [MotionDirector](https://github.com/showlab/MotionDirector) for [AnimateDiff](https://arxiv.org/abs/2307.04725).
 
-**[AnimateDiff: Animate Your Personalized Text-to-Image Diffusion Models without Specific Tuning](https://arxiv.org/abs/2307.04725)**
-</br>
-[Yuwei Guo](https://guoyww.github.io/),
-[Ceyuan Yang*](https://ceyuan.me/),
-[Anyi Rao](https://anyirao.com/),
-[Yaohui Wang](https://wyhsirius.github.io/),
-[Yu Qiao](https://scholar.google.com.hk/citations?user=gFtI-8QAAAAJ),
-[Dahua Lin](http://dahua.site),
-[Bo Dai](https://daibo.info)
-(*Corresponding Author)
+AnimateDiff is a plug-and-play module turning most community models into animation generators, without the need of additional training.
 
-<!-- [Arxiv Report](https://arxiv.org/abs/2307.04725) | [Project Page](https://animatediff.github.io/) -->
-[![arXiv](https://img.shields.io/badge/arXiv-2307.04725-b31b1b.svg)](https://arxiv.org/abs/2307.04725)
-[![Project Page](https://img.shields.io/badge/Project-Website-green)](https://animatediff.github.io/)
-[![Open in OpenXLab](https://cdn-static.openxlab.org.cn/app-center/openxlab_app.svg)](https://openxlab.org.cn/apps/detail/Masbfca/AnimateDiff)
-[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-yellow)](https://huggingface.co/spaces/guoyww/AnimateDiff)
+MotionDirector is a method to train the motions of videos, and use those motions to drive your animations.
 
-We developed four versions of AnimateDiff: `v1`, `v2` and `v3` for [Stable Diffusion V1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5); `sdxl-beta` for [Stable Diffusion XL](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0).
+This repository contains the necessary code for training, with intended usage in other applications (such as ComfyUI).
+Code is developed user first, and modularized for developers and researchers to build on top of.
+Most code has been stripped from the original repository, and runs without distributed mode for ease of use and compatibility. 
+If you wish to add it back, you can do so by referencing the original code.
 
-## Next
-- [ ] Update to latest diffusers version
-- [ ] Update Gradio demo
-- [ ] Release training scripts
-- [x] Release AnimateDiff v3 and SparseCtrl
-
-## Gallery
-We show some results in the [GALLERY](./__assets__/docs/gallery.md).
-Some of them are contributed by the community.
-
-## Preparations
-
-Note: see [ANIMATEDIFF](__assets__/docs/animatediff.md) for detailed setup.
+Only `v3` modules have been tested for [Stable Diffusion V1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5). 
+At the moment, there are no plans for SDXL as it's still in early stages, but is very well possible. PRs welcomed! 
 
 ### Setup repository and conda environment
 
 ```
-git clone https://github.com/guoyww/AnimateDiff.git
-cd AnimateDiff
+git clone https://github.com/ExponentialML/AnimateDiff-MotionDirector
+cd AnimateDiff-MotionDirector
 
 conda env create -f environment.yaml
 conda activate animatediff
+
+pip install -r requirements.txt
 ```
 
 ### Download Stable Diffusion V1.5
@@ -53,327 +33,70 @@ git lfs install
 git clone https://huggingface.co/runwayml/stable-diffusion-v1-5 models/StableDiffusion/
 ```
 
-### Prepare Community Models
-
-Manually download the community `.safetensors` models from [CivitAI](https://civitai.com), and save them to `models/DreamBooth_LoRA`. We recommand [RealisticVision V5.1](https://civitai.com/models/4201?modelVersionId=130072) and [ToonYou Beta6](https://civitai.com/models/30240?modelVersionId=125771).
-
-### Prepare AnimateDiff Modules
-
-Manually download the AnimateDiff modules. The download links can be found in each version's model zoo, as provided in the following. Save the modules to `models/Motion_Module`.
-
-
-##  [2023.12] AnimateDiff v3 and SparseCtrl
-
-In this version, we did the image model finetuning through **Domain Adapter LoRA** for more flexiblity at inference time.
-
-Additionally, we implement two (RGB image/scribble) [SparseCtrl](https://arxiv.org/abs/2311.16933) Encoders, which can take abitary number of condition maps to control the generation process.
-
-- **Explanation:** Domain Adapter is a LoRA module trained on static frames of the training video dataset. This process is done before training the motion module, and helps the motion module focus on motion modeling, as shown in the figure below. At inference, By adjusting the LoRA scale of the Domain Adapter, some visual attributes of the training video, e.g., the watermarks, can be removed. To utilize the SparseCtrl encoder, it's necessary to use a full Domain Adapter in the pipeline.
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="__assets__/figs/adapter_explain.png" style="width:60%">
-
-
-Technical details of SparseCtrl can be found in this research paper:
-
-**[SparseCtrl: Adding Sparse Controls to Text-to-Video Diffusion Models](https://arxiv.org/abs/2311.16933)**
-</br>
-[Yuwei Guo](https://guoyww.github.io/),
-[Ceyuan Yang*](https://ceyuan.me/),
-[Anyi Rao](https://anyirao.com/),
-[Maneesh Agrawala](https://graphics.stanford.edu/~maneesh/),
-[Dahua Lin](http://dahua.site),
-[Bo Dai](https://daibo.info)
-(*Corresponding Author)
-
-[![arXiv](https://img.shields.io/badge/arXiv-2311.16933-b31b1b.svg)](https://arxiv.org/abs/2311.16933)
-[![Project Page](https://img.shields.io/badge/Project-Website-green)](https://guoyww.github.io/projects/SparseCtrl/)
-
-
-<details open>
-<summary>AnimateDiff v3 Model Zoo</summary>
-
-  | Name                          | HuggingFace                                                                                | Type                | Storage Space | Description                        |
-  |-------------------------------|--------------------------------------------------------------------------------------------|---------------------|---------------|------------------------------------|
-  | `v3_adapter_sd_v15.ckpt`      | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v3_sd15_adapter.ckpt)           | Domain Adapter      | 97.4 MB       |                                    |
-  | `v3_sd15_mm.ckpt.ckpt`           | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v3_sd15_mm.ckpt)              | Motion Module       | 1.56 GB       |                                    |
-  | `v3_sd15_sparsectrl_scribble.ckpt` | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v3_sd15_sparsectrl_scribble.ckpt)    | SparseCtrl Encoder  | 1.86 GB       | scribble condition  |
-  | `v3_sd15_sparsectrl_rgb.ckpt`    | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v3_sd15_sparsectrl_rgb.ckpt)       | SparseCtrl Encoder  | 1.85 GB       | RGB image condition |
-</details>
-
-### Quick Demos
-
-<table class="center">
-    <tr style="line-height: 0">
-    <td width=25% style="border: none; text-align: center">Input (by RealisticVision)</td>
-    <td width=25% style="border: none; text-align: center">Animation</td>
-    <td width=25% style="border: none; text-align: center">Input</td>
-    <td width=25% style="border: none; text-align: center">Animation</td>
-    </tr>
-    <tr>
-    <td width=25% style="border: none"><img src="__assets__/demos/image/RealisticVision_firework.png" style="width:100%"></td>
-    <td width=25% style="border: none"><img src="__assets__/animations/v3/animation_fireworks.gif" style="width:100%"></td>
-    <td width=25% style="border: none"><img src="__assets__/demos/image/RealisticVision_sunset.png" style="width:100%"></td>
-    <td width=25% style="border: none"><img src="__assets__/animations/v3/animation_sunset.gif" style="width:100%"></td>
-    </tr>
-</table>
-
-<table class="center">
-    <tr style="line-height: 0">
-    <td width=25% style="border: none; text-align: center">Input Scribble</td>
-    <td width=25% style="border: none; text-align: center">Output</td>
-    <td width=25% style="border: none; text-align: center">Input Scribbles</td>
-    <td width=25% style="border: none; text-align: center">Output</td>
-    </tr>
-    <tr>
-      <td width=25% style="border: none"><img src="__assets__/demos/scribble/scribble_1.png" style="width:100%"></td>
-      <td width=25% style="border: none"><img src="__assets__/animations/v3/sketch_boy.gif" style="width:100%"></td>
-      <td width=25% style="border: none"><img src="__assets__/demos/scribble/scribble_2_readme.png" style="width:100%"></td>
-      <td width=25% style="border: none"><img src="__assets__/animations/v3/sketch_city.gif" style="width:100%"></td>
-    </tr>
-</table>
-
-
-### Inference
-
-Here we provide three demo inference scripts. The corresponding AnimateDiff modules and community models need to be downloaded in advance. Put motion module in `models/Motion_Module`; put SparseCtrl encoders in `models/SparseCtrl`.
+### Download V3 Motion Module
 ```
-# under general T2V setting
-python -m scripts.animate --config configs/prompts/v3/v3-1-T2V.yaml
-
-# image animation (on RealisticVision)
-python -m scripts.animate --config configs/prompts/v3/v3-2-animation-RealisticVision.yaml
-
-# sketch-to-animation and storyboarding (on RealisticVision)
-python -m scripts.animate --config configs/prompts/v3/v3-3-sketch-RealisticVision.yaml
+git lfs install
+https://huggingface.co/guoyww/animatediff/blob/main/v3_sd15_mm.ckpt
 ```
 
-### Limitations
-1. Small fickering is noticable. To be solved in future versions;
-2. To stay compatible with comunity models, there is no specific optimizations for general T2V, leading to limited visual quality under this setting;
-3. **(Style Alignment) For usage such as image animation/interpolation, it's recommanded to use images generated by the same community model.**
+## Training Instuctions
 
+Open `./configs/training/motion_director/my_video.yaml`.
 
-## [2023.11] AnimateDiff SDXL-Beta
+This is a config that extracts the complexity from the original config, making multiple runs and provides better ease of use.
 
-Release the Motion Module (beta version) on SDXL, available at [Google Drive](https://drive.google.com/file/d/1EK_D9hDOPfJdK4z8YDB8JYvPracNx2SX/view?usp=share_link
-) / [HuggingFace](https://huggingface.co/guoyww/animatediff/blob/main/mm_sdxl_v10_beta.ckpt
-) / [CivitAI](https://civitai.com/models/108836/animatediff-motion-modules). High resolution videos (i.e., 1024x1024x16 frames with various aspect ratios) could be produced **with/without** personalized models. Inference usually requires ~13GB VRAM and tuned hyperparameters (e.g., #sampling steps), depending on the chosen personalized models.
+To setup training, open the `my_video.yaml` in a text editor. There, every line necessary for training will have a comment with instructions necessary to start.
 
-Checkout to the branch [sdxl](https://github.com/guoyww/AnimateDiff/tree/sdxl) for more details of the inference. More checkpoints with better-quality would be available soon. Stay tuned. Examples below are manually downsampled for fast loading.
+To run, simply execute the following code.
 
-<details open>
-<summary>AnimateDiff SDXL-Beta Model Zoo</summary>
+`python train.py --config ./configs/training/motion_director/my_video.yaml`
 
-  | Name                          | HuggingFace             | Type                | Storage Space |
-  |-------------------------------|-----------------------------------------------------------------------------------|---------------------|---------------|
-  | `mm_sdxl_v10_beta.ckpt`       | [Link](https://huggingface.co/guoyww/animatediff/blob/main/mm_sdxl_v10_beta.ckpt) | Motion Module       | 950 MB        |
-</details>
+By default, results will be saved in `outputs`. 
 
-<table class="center">
-    <tr style="line-height: 0">
-    <td width=52% style="border: none; text-align: center">Original SDXL</td>
-    <td width=30% style="border: none; text-align: center">Community SDXL</td>
-    <td width=18% style="border: none; text-align: center">Community SDXL</td>
-    </tr>
-    <tr>
-    <td width=52% style="border: none"><img src="__assets__/animations/motion_xl/01.gif" style="width:100%"></td>
-    <td width=30% style="border: none"><img src="__assets__/animations/motion_xl/02.gif" style="width:100%"></td>
-    <td width=18% style="border: none"><img src="__assets__/animations/motion_xl/03.gif" style="width:100%"></td>
-    </tr>
-</table>
+Expected training time on the `"preferred"` quality setting should take roughly 10-15 minutes to converge on roughly 14GB of VRAM.
+You can change `max_train_steps` in `.configs/training/motion_director/training.yaml` if you wish to train longer.
 
+### Recommendation
+My recommended training workflow for MotionDirector is to choose a single video of the motion you wish to train.
 
+If you do wish to train multi videos, choose 3-5 videos with similar motions for the best results.
 
-## [2023.09] AnimateDiff v2
+More often than not, it seems to work more consistently than multiple videos, and trains faster (500 - 700 steps).
 
-In this version, the motion module is trained upon larger resolution and batch size.
-We observe this significantly helps improve the sample quality.
+Training multiple videos of different motions / subjects and prompts has not been tested thoroughly, so your mileage may vary.
 
-Moreover, we support **MotionLoRA** for eight basic camera movements.
+A general rule of thumb is 300 steps per video at default settings.
 
-<details open>
-<summary>AnimateDiff v2 Model Zoo</summary>
+## Advanced Training Instructions
 
-  | Name                                 | HuggingFace                                                                                      | Type          | Parameter | Storage Space |
-  |--------------------------------------|--------------------------------------------------------------------------------------------------|---------------|-----------|---------------|
-  | mm_sd_v15_v2.ckpt                    | [Link](https://huggingface.co/guoyww/animatediff/blob/main/mm_sd_v15_v2.ckpt)                    | Motion Module | 453 M     | 1.7 GB        |
-  | v2_lora_ZoomIn.ckpt                  | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v2_lora_ZoomIn.ckpt)                  | MotionLoRA    | 19 M      | 74 MB         |
-  | v2_lora_ZoomOut.ckpt                 | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v2_lora_ZoomOut.ckpt)                 | MotionLoRA    | 19 M      | 74 MB         |
-  | v2_lora_PanLeft.ckpt                 | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v2_lora_PanLeft.ckpt)                 | MotionLoRA    | 19 M      | 74 MB         |
-  | v2_lora_PanRight.ckpt                | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v2_lora_PanRight.ckpt)                | MotionLoRA    | 19 M      | 74 MB         |
-  | v2_lora_TiltUp.ckpt                  | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v2_lora_TiltUp.ckpt)                  | MotionLoRA    | 19 M      | 74 MB         |
-  | v2_lora_TiltDown.ckpt                | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v2_lora_TiltDown.ckpt)                | MotionLoRA    | 19 M      | 74 MB         |
-  | v2_lora_RollingClockwise.ckpt        | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v2_lora_RollingClockwise.ckpt)        | MotionLoRA    | 19 M      | 74 MB         |
-  | v2_lora_RollingAnticlockwise.ckpt    | [Link](https://huggingface.co/guoyww/animatediff/blob/main/v2_lora_RollingAnticlockwise.ckpt)    | MotionLoRA    | 19 M      | 74 MB         |
+Intended for developers, researchers, or those who are familiar with finetuning can edit the following config.
 
-</details>
+`.configs/training/motion_director/training.yaml`
 
+There, you can tweak the learning rate, video datasets, and so on as you see fit.
+For more information on dataset handling in code, refer to `./animatediff/utils/dataset.py`.
 
-- Release **MotionLoRA** and its model zoo, **enabling camera movement controls**! Please download the MotionLoRA models (**74 MB per model**, available at [Google Drive](https://drive.google.com/drive/folders/1EqLC65eR1-W-sGD0Im7fkED6c8GkiNFI?usp=sharing) / [HuggingFace](https://huggingface.co/guoyww/animatediff) / [CivitAI](https://civitai.com/models/108836/animatediff-motion-modules) ) and save them to the `models/MotionLoRA` folder. Example:
-  ```
-  python -m scripts.animate --config configs/prompts/v2/5-RealisticVision-MotionLoRA.yaml
-  ```
-    <table class="center">
-      <tr style="line-height: 0">
-      <td colspan="2" style="border: none; text-align: center">Zoom In</td>
-      <td colspan="2" style="border: none; text-align: center">Zoom Out</td>
-      <td colspan="2" style="border: none; text-align: center">Zoom Pan Left</td>
-      <td colspan="2" style="border: none; text-align: center">Zoom Pan Right</td>
-      </tr>
-      <tr>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_01/01.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_02/02.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_01/02.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_02/01.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_01/03.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_02/04.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_01/04.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_02/03.gif"></td>
-      </tr>
-      <tr style="line-height: 0">
-      <td colspan="2" style="border: none; text-align: center">Tilt Up</td>
-      <td colspan="2" style="border: none; text-align: center">Tilt Down</td>
-      <td colspan="2" style="border: none; text-align: center">Rolling Anti-Clockwise</td>
-      <td colspan="2" style="border: none; text-align: center">Rolling Clockwise</td>
-      </tr>
-      <tr>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_01/05.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_02/05.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_01/06.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_02/06.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_01/07.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_02/07.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_01/08.gif"></td>
-      <td style="border: none"><img src="__assets__/animations/motion_lora/model_02/08.gif"></td>
-      </tr>
-  </table>
+## Inference
 
-- New Motion Module release! `mm_sd_v15_v2.ckpt` was trained on larger resolution & batch size, and gains noticeable quality improvements. Check it out at [Google Drive](https://drive.google.com/drive/folders/1EqLC65eR1-W-sGD0Im7fkED6c8GkiNFI?usp=sharing) / [HuggingFace](https://huggingface.co/guoyww/animatediff) / [CivitAI](https://civitai.com/models/108836/animatediff-motion-modules) and use it with `configs/inference/inference-v2.yaml`. Example:
-  ```
-  python -m scripts.animate --config configs/prompts/v2/5-RealisticVision.yaml
-  ```
-  Here is a qualitative comparison between `mm_sd_v15.ckpt` (left) and `mm_sd_v15_v2.ckpt` (right):
-  <table class="center">
-      <tr>
-      <td><img src="__assets__/animations/compare/old_0.gif"></td>
-      <td><img src="__assets__/animations/compare/new_0.gif"></td>
-      <td><img src="__assets__/animations/compare/old_1.gif"></td>
-      <td><img src="__assets__/animations/compare/new_1.gif"></td>
-      <td><img src="__assets__/animations/compare/old_2.gif"></td>
-      <td><img src="__assets__/animations/compare/new_2.gif"></td>
-      <td><img src="__assets__/animations/compare/old_3.gif"></td>
-      <td><img src="__assets__/animations/compare/new_3.gif"></td>
-      </tr>
-  </table>
+After training, the LoRAs are intended to be used with the ComfyUI Extension [ComfyUI-AnimateDiff-Evolved](https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved).
 
+Simply follow the instructions in the aforementioned repository, and use the AnimateDiffLoader. Any AnimateDiff workflow will work with these LoRAs (including RGB / SparseCtrl).
 
-## [2023.07] AnimateDiff v1
+Two LoRA's will be saved after training in the folders `spatial` & `temporal`, inside of the `output` training folder.
 
-<details open>
-<summary>AnimateDiff v1 Model Zoo</summary>
+The spatial LoRAs are akin to the ***image*** data, similar to image finetuning. Using these will make your LoRA's look like the subject/s you've trained.
 
-  | Name            | HuggingFace                                                                  | Parameter | Storage Space |
-  |-----------------|------------------------------------------------------------------------------|-----------|---------------|
-  | mm_sd_v14.ckpt  | [Link](https://huggingface.co/guoyww/animatediff/blob/main/mm_sd_v14.ckpt)   | 417 M     | 1.6 GB        |
-  | mm_sd_v15.ckpt  | [Link](https://huggingface.co/guoyww/animatediff/blob/main/mm_sd_v15.ckpt)   | 417 M     | 1.6 GB        |
+The temporal LoRAs are the ***time*** data (or motion data). Using these will derive the motion of a subject (you can swap a car for an elephant running for instance).
 
-</details>
+Workflows will be available in the future, but a good place to start is to use IPAdapter in ComfyUI alongside with AnimateDiff using the trained LoRA's from this repository.
 
-### Quick Demos
-<table class="center">
-    <tr>
-    <td><img src="__assets__/animations/model_01/01.gif"></td>
-    <td><img src="__assets__/animations/model_01/02.gif"></td>
-    <td><img src="__assets__/animations/model_01/03.gif"></td>
-    <td><img src="__assets__/animations/model_01/04.gif"></td>
-    </tr>
-</table>
-<p style="margin-left: 2em; margin-top: -1em">Model：<a href="https://civitai.com/models/30240/toonyou">ToonYou</a></p>
+### Compatibility
 
-<table>
-    <tr>
-    <td><img src="__assets__/animations/model_03/01.gif"></td>
-    <td><img src="__assets__/animations/model_03/02.gif"></td>
-    <td><img src="__assets__/animations/model_03/03.gif"></td>
-    <td><img src="__assets__/animations/model_03/04.gif"></td>
-    </tr>
-</table>
-<p style="margin-left: 2em; margin-top: -1em">Model：<a href="https://civitai.com/models/4201/realistic-vision-v20">Realistic Vision V2.0</a></p>
+The temporal LoRAs are saved in the same format as MotionLoRAs, so any repository that supports MotionLoRA should be used for them, and will not work otherwise.
 
+To use the spatial LoRAs, load them like any other LoRA. They are saved in CompVis format, ***not*** Diffusers format as the intended usage is for community based repositories.
 
-### Inference
-
-Here we provide several demo inference scripts. The corresponding AnimateDiff modules and community models need to be downloaded in advance. See [ANIMATEDIFF](__assets__/docs/animatediff.md) for detailed setup.
-
-```
-python -m scripts.animate --config configs/prompts/1-ToonYou.yaml
-python -m scripts.animate --config configs/prompts/3-RcnzCartoon.yaml
-```
-
-
-## Community Contributions
-
-User Interface developed by community: 
-  - A1111 Extension [sd-webui-animatediff](https://github.com/continue-revolution/sd-webui-animatediff) (by [@continue-revolution](https://github.com/continue-revolution))
-  - ComfyUI Extension [ComfyUI-AnimateDiff-Evolved](https://github.com/Kosinkadink/ComfyUI-AnimateDiff-Evolved) (by [@Kosinkadink](https://github.com/Kosinkadink))
-  - Google Colab: [Colab](https://colab.research.google.com/github/camenduru/AnimateDiff-colab/blob/main/AnimateDiff_colab.ipynb) (by [@camenduru](https://github.com/camenduru))
-
-## Gradio Demo
-
-We created a Gradio demo to make AnimateDiff easier to use. To launch the demo, please run the following commands:
-
-```
-conda activate animatediff
-python app.py
-```
-
-By default, the demo will run at `localhost:7860`.
-<br><img src="__assets__/figs/gradio.jpg" style="width: 50em; margin-top: 1em">
-
-
-## Common Issues
-<details>
-<summary>Installation</summary>
-
-Please ensure the installation of [xformer](https://github.com/facebookresearch/xformers) that is applied to reduce the inference memory.
-</details>
-
-
-<details>
-<summary>Various resolution or number of frames</summary>
-Currently, we recommend users to generate animation with 16 frames and 512 resolution that are aligned with our training settings. Notably, various resolution/frames may affect the quality more or less. 
-</details>
-
-
-<details>
-<summary>How to use it without any coding</summary>
-
-1) Get lora models: train lora model with [A1111](https://github.com/continue-revolution/sd-webui-animatediff) based on a collection of your own favorite images (e.g., tutorials [English](https://www.youtube.com/watch?v=mfaqqL5yOO4), [Japanese](https://www.youtube.com/watch?v=N1tXVR9lplM), [Chinese](https://www.bilibili.com/video/BV1fs4y1x7p2/)) 
-or download Lora models from [Civitai](https://civitai.com/).
-
-2) Animate lora models: using gradio interface or A1111 
-(e.g., tutorials [English](https://github.com/continue-revolution/sd-webui-animatediff), [Japanese](https://www.youtube.com/watch?v=zss3xbtvOWw), [Chinese](https://941ai.com/sd-animatediff-webui-1203.html)) 
-
-3) Be creative togther with other techniques, such as, super resolution, frame interpolation, music generation, etc.
-</details>
-
-
-<details>
-<summary>Animating a given image</summary>
-
-We totally agree that animating a given image is an appealing feature, which we would try to support officially in future. For now, you may enjoy other efforts from the [talesofai](https://github.com/talesofai/AnimateDiff).  
-</details>
-
-<details>
-<summary>Contributions from community</summary>
-Contributions are always welcome!! The <code>dev</code> branch is for community contributions. As for the main branch, we would like to align it with the original technical report :)
-</details>
-
-## Training and inference
-Please refer to [ANIMATEDIFF](./__assets__/docs/animatediff.md) for the detailed setup.
-
-<!-- ## Gallery -->
-<!-- We collect several generated results in [GALLERY](./__assets__/docs/gallery.md). -->
+Alternatively, you can run the inference code with the original AnimateDiff repository, or others that support it.
 
 ## BibTeX
 ```
@@ -383,23 +106,21 @@ Please refer to [ANIMATEDIFF](./__assets__/docs/animatediff.md) for the detailed
   journal={arXiv preprint arXiv:2307.04725},
   year={2023}
 }
-
-@article{guo2023sparsectrl,
-  title={SparseCtrl: Adding Sparse Controls to Text-to-Video Diffusion Models},
-  author={Guo, Yuwei and Yang, Ceyuan and Rao, Anyi and Agrawala, Maneesh and Lin, Dahua and Dai, Bo},
-  journal={arXiv preprint arXiv:2311.16933},
+@article{zhao2023motiondirector,
+  title={MotionDirector: Motion Customization of Text-to-Video Diffusion Models},
+  author={Zhao, Rui and Gu, Yuchao and Wu, Jay Zhangjie and Zhang, David Junhao and Liu, Jiawei and Wu, Weijia and Keppo, Jussi and Shou, Mike Zheng},
+  journal={arXiv preprint arXiv:2310.08465},
   year={2023}
 }
 ```
 
 ## Disclaimer
-This project is released for academic use. We disclaim responsibility for user-generated content. Users are solely liable for their actions. The project contributors are not legally affiliated with, nor accountable for, users' behaviors. Use the generative model responsibly, adhering to ethical and legal standards.
-
-
-## Contact Us
-**Yuwei Guo**: [guoyuwei@pjlab.org.cn](mailto:guoyuwei@pjlab.org.cn)  
-**Ceyuan Yang**: [yangceyuan@pjlab.org.cn](mailto:yangceyuan@pjlab.org.cn)  
-**Bo Dai**: [daibo@pjlab.org.cn](mailto:daibo@pjlab.org.cn)
+This project is released for academic use and creative usage. We disclaim responsibility for user-generated content. Users are solely liable for their actions. The project contributors are not legally affiliated with, nor accountable for, users' behaviors. Use the generative model responsibly, adhering to ethical and legal standards.
 
 ## Acknowledgements
-Codebase built upon [Tune-a-Video](https://github.com/showlab/Tune-A-Video).
+Codebase built upon:
+- [AnimateDiff](https://github.com/guoyww/AnimateDiff)
+- [Tune-a-Video](https://github.com/showlab/Tune-A-Video).
+- [MotionDirector](https://github.com/showlab/MotionDirector)
+- [Text-To-Video-Finetuning](https://github.com/ExponentialML/Text-To-Video-Finetuning)
+- [lora](https://github.com/cloneofsimo/lora)

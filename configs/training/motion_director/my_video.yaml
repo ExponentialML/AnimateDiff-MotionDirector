@@ -1,0 +1,55 @@
+# Model From Huggingface Diffusers
+pretrained_model_path: "diffusers/stable-diffusion-v1-5"
+
+# Model in CKPT format. This is the CKPT that you download from CivitAI or use in A111 Comfy, etc.
+# In most cases, leave this blank.
+unet_checkpoint_path: ""
+
+# Must be CKPT from https://huggingface.co/guoyww/animatediff/tree/main
+motion_module_path: "v3_sd15_mm.ckpt"
+
+# Must be CKPT from https://huggingface.co/guoyww/animatediff/tree/main
+# Optional for training.
+domain_adapter_path: "" #"v3_sd15_adapter.ckpt"
+
+# ["single_video", "folder"]
+# single_video = path/my_video.mp4
+# folder = path/my_videos
+
+# You can have .txt file with prompt in the same folder. 
+# Eg. path/my_videos/1.mp4 path/my_videos/1.txt
+# Otherwise, every video will have the same training prompt.
+mode_type: "single_video"
+
+video:
+  # Your local video path
+  path: "examples/pexels-cottonbro-5319934 (2160p).mp4" # Or just path/to/folder_of_videos_with_.txt_files/
+
+  # Optional custom start frame (idx). Leave this at 0 if your video is already trimmed.
+  # This is only recommended for single videos.
+  start_time: 0
+
+  # If your video is longer than 16 frames, it will be chunked into multiple parts.
+  # This is advanced usage, so leave this at 1.
+  max_chunks: 1
+
+  # Describe your action with a simple prompt.
+  training_prompt: "a man is running on a bridge"
+
+  # A custom prompt that will generate during to see your training progress.
+  validation_prompt: "a highly realistic video of batman running in a mystic forest, depth of field, epic lights, high quality, trending on artstation"
+
+# The name of the LoRA file (will save to ./results/{save_name}...)
+save_name: "dog_jump"
+
+# Quality
+# Quality of training: ["low", "preferred", "best"]
+# low = Save the most memory, preferred = Most optimal, best = Memory intensive
+quality: "preferred"
+
+# Advanced users only. Only modify this if you're familiar with traning models.
+# You can call / modify this config directly if you know what you're doing.
+training_config: "configs/training/motion_director/training.yaml"
+
+# Do not change this. Refer to the above for advanced training.
+simple_mode: True

@@ -1,0 +1,17 @@
+diffusers==0.11.1
+torch
+pyav
+torchvision
+transformers
+xformers
+imageio-ffmpeg
+imageio
+decord
+loralib
+gdown
+einops
+omegaconf
+safetensors
+gradio
+wandb
+lion-pytorch
