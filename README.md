@@ -62,16 +62,18 @@ By default, results will be saved in `outputs`.
 Expected training time on the `"preferred"` quality setting should take roughly 10-15 minutes to converge on roughly 14GB of VRAM.
 You can change `max_train_steps` in `.configs/training/motion_director/training.yaml` if you wish to train longer.
 
-### Recommendation
+### Recommendations
 My recommended training workflow for MotionDirector is to choose a single video of the motion you wish to train.
 
-If you do wish to train multi videos, choose 3-5 videos with similar motions for the best results.
+Also, test with and without the domain adapter LoRA for training. While training without the adapter gives results faster, I perceive better training stability in using it rather than not. This also (seemingly) helps with combining with other spatial LoRAs if you chose the latter. 
 
-More often than not, it seems to work more consistently than multiple videos, and trains faster (500 - 700 steps).
+If you do wish to train multi videos, choose 3-5 videos with similar motions for the best results. Long training runs with large, customized datasets should work theoritically, but this has not been tested. For now, it may be better to train similarly to standard LoRA training (one character, one style, etc.)
+
+More often than not, it seems to work more consistently than multiple videos, and trains faster (500 - 700 steps with AdamW).
 
 Training multiple videos of different motions / subjects and prompts has not been tested thoroughly, so your mileage may vary.
 
-A general rule of thumb is 300 steps per video at default settings.
+From my tests, a general rule of thumb is 300 steps per video at default settings with AdamW, and about half that with the Lion optimizer.
 
 ## Advanced Training Instructions
 
