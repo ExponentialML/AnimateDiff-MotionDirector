@@ -9,7 +9,7 @@ unet_checkpoint_path: ""
 motion_module_path: "v3_sd15_mm.ckpt"
 
 # Must be CKPT from https://huggingface.co/guoyww/animatediff/tree/main
-# Optional for training.
+# Optional for training, but highly recommended as a starting point. 
 domain_adapter_path: "" #"v3_sd15_adapter.ckpt"
 
 # ["single_video", "folder"]
@@ -23,7 +23,7 @@ mode_type: "single_video"
 
 video:
   # Your local video path
-  path: "examples/pexels-cottonbro-5319934 (2160p).mp4" # Or just path/to/folder_of_videos_with_.txt_files/
+  path: "examples/pexels-cottonbro-5319934 (2160p).mp4" # Or just path/to/folder_of_videos_with_.txt_files/ (set mode_type to "folder")
 
   # Optional custom start frame (idx). Leave this at 0 if your video is already trimmed.
   # This is only recommended for single videos.
