@@ -969,6 +969,8 @@ def main(
                     with torch.no_grad():
                         unet.eval()
                         for idx, prompt in enumerate(prompts):
+                            if len(prompt) == 0:
+                                prompt = batch['text_prompt']
                             print(prompt)
                             if not image_finetune:
                                 sample = validation_pipeline(
