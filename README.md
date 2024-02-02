@@ -2,7 +2,9 @@
 
 *Training video*           |  *Output video*
 :-------------------------:|:-------------------------:
-![myimage](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/b4e2c1d5-d33b-47dc-b106-9836737d3bd2) | ![myimage](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/b61b7919-2c9b-4556-aff9-4c15bb60ebf3)
+![myimage](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/b4e2c1d5-d33b-47dc-b106-9836737d3bd2) | ![myimage](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/b61b7919-2c9b-4556-aff9-4c15bb60ebf3)  | 
+![bat_run](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/bd40ce25-9892-49f9-9fd4-785e492c04b5) *Output video* | ![rabbit_run](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/f24d05bb-67fa-48d4-a103-610e8de2ffe6) 
+
 
 *a highly realistic video of batman running in a mystic forest, depth of field, epic lights, high quality, trending on artstation*
 
@@ -106,7 +108,16 @@ To use the spatial LoRAs, load them like any other LoRA. They are saved in CompV
 
 Alternatively, you can run the inference code with the original AnimateDiff repository, or others that support it.
 
+### More Examples
+*Training video*           |  *Output video*
+:-------------------------:|:-------------------------:
+![car_input](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/75318840-1791-4dee-97be-3f100c27c0b6) | ![boat_drift](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/3c1064d0-4dcc-4792-b77d-5e66443fbe3b)
+-> | ![car_drift](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/6d873fa9-fafa-4701-af1c-750b20b1a664)
+-> | ![bunny](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/f0ed706d-1cb8-46bf-ad20-be782fb022fe)
+-> | ![mk](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/5815c1c0-5d64-4de2-9f09-738bc4ccb840)
+
 ## BibTeX
+
 ```
 @article{guo2023animatediff,
   title={AnimateDiff: Animate Your Personalized Text-to-Image Diffusion Models without Specific Tuning},
