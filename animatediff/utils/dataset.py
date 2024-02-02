@@ -552,8 +552,8 @@ class ImageDataset(DatasetProcessor, Dataset):
 
 # NOTE: This is currently unused in this repository. All videos are processed with SingleVideoDataset.
 # If you are doing folder based training, all single videos are concatenated into a single dataset using ConcatDataset.
-# The VideoDataset class is still usable, but must be manually set and modified in your training script.
-class VideoDataset(DatasetProcessor, Dataset):
+# The VideoFolderDataset class is still usable, but must be manually set and modified in your training script.
+class VideoFolderDataset(DatasetProcessor, Dataset):
     def __init__(
         self,
         tokenizer=None,
