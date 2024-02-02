@@ -132,8 +132,8 @@ class DatasetProcessor(object):
         )
         resize = T.transforms.Resize(
             (height, width), 
-            antialias=True, 
-            interpolation=torchvision.transforms.InterpolationMode.NEAREST_EXACT
+            antialias=False, 
+            interpolation=torchvision.transforms.InterpolationMode.NEAREST
         )
         return resize, height, width
 
