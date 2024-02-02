@@ -550,7 +550,10 @@ class ImageDataset(DatasetProcessor, Dataset):
     
         return self._example(img, prompt_ids, prompt)
 
-class VideoFolderDataset(DatasetProcessor, Dataset):
+# NOTE: This is currently unused in this repository. All videos are processed with SingleVideoDataset.
+# If you are doing folder based training, all single videos are concatenated into a single dataset using ConcatDataset.
+# The VideoDataset class is still usable, but must be manually set and modified in your training script.
+class VideoDataset(DatasetProcessor, Dataset):
     def __init__(
         self,
         tokenizer=None,
