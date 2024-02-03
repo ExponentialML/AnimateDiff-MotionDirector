@@ -35,7 +35,7 @@ from .unet_blocks import (
 from einops import repeat, rearrange
 from .resnet import InflatedConv3d
 
-from diffusers.models.unet_2d_condition import UNet2DConditionModel
+from diffusers.models.unets.unet_2d_condition import UNet2DConditionModel
 
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 
