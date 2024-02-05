@@ -116,6 +116,15 @@ Alternatively, you can run the inference code with the original AnimateDiff repo
 -> | ![bunny](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/f0ed706d-1cb8-46bf-ad20-be782fb022fe)
 -> | ![mk](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/5815c1c0-5d64-4de2-9f09-738bc4ccb840)
 
+### Community Examples
+*Training video*           |  *Output video*
+:-------------------------:|:-------------------------:
+![sample-500-0](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/0ab8e16d-2d62-4ae0-83e2-e329a1aa1c68) | ![sample-500-1](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/3464f8cb-87b8-4b5c-8df9-acaac4fd4293)
+->| ![sample-500-2](https://github.com/ExponentialML/AnimateDiff-MotionDirector/assets/59846140/0b724bc0-d44c-4300-9f1a-266b85b678ca) 
+Benjaminimal Discord
+
+
+
 ## BibTeX
 
 ```
