@@ -1,3 +1,4 @@
+--extra-index-url https://download.pytorch.org/whl/cu118
 diffusers==0.11.1
 torch
 pyav
