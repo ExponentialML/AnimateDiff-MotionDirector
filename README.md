@@ -29,7 +29,7 @@ git clone https://github.com/ExponentialML/AnimateDiff-MotionDirector
 cd AnimateDiff-MotionDirector
 
 conda env create -f environment.yaml
-conda activate animatediff
+conda activate animatediff-motiondirector
 
 pip install -r requirements.txt
 ```
