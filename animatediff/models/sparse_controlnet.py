@@ -23,7 +23,7 @@ from torch.nn import functional as F
 from diffusers.configuration_utils import ConfigMixin, register_to_config
 from diffusers.utils import BaseOutput, logging
 from diffusers.models.embeddings import TimestepEmbedding, Timesteps
-from diffusers.modeling_utils import ModelMixin
+from diffusers import ModelMixin
 
 
 from .unet_blocks import (
@@ -35,7 +35,7 @@ from .unet_blocks import (
 from einops import repeat, rearrange
 from .resnet import InflatedConv3d
 
-from diffusers.models.unet_2d_condition import UNet2DConditionModel
+from diffusers.models.unets.unet_2d_condition import UNet2DConditionModel
 
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 

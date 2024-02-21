@@ -12,7 +12,7 @@ import torch.nn as nn
 import torch.utils.checkpoint
 
 from diffusers.configuration_utils import ConfigMixin, register_to_config
-from diffusers.modeling_utils import ModelMixin
+from diffusers import ModelMixin
 from diffusers.utils import BaseOutput, logging
 from diffusers.models.embeddings import TimestepEmbedding, Timesteps
 from .unet_blocks import (
@@ -499,12 +499,23 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
             "CrossAttnUpBlock3D"
         ]
 
-        from diffusers.utils import WEIGHTS_NAME
+        from diffusers.utils import WEIGHTS_NAME, SAFETENSORS_WEIGHTS_NAME
         model = cls.from_config(config, **unet_additional_kwargs)
+
         model_file = os.path.join(pretrained_model_path, WEIGHTS_NAME)
+        model_file_safe = os.path.join(pretrained_model_path, SAFETENSORS_WEIGHTS_NAME)
+
+        if os.path.isfile(model_file_safe):
+            model_file = model_file_safe
+
         if not os.path.isfile(model_file):
             raise RuntimeError(f"{model_file} does not exist")
-        state_dict = torch.load(model_file, map_location="cpu")
+
+        if SAFETENSORS_WEIGHTS_NAME in model_file:
+            from safetensors.torch import load_file
+            state_dict = load_file(model_file)
+        else:
+            state_dict = torch.load(model_file, map_location="cpu")
 
         m, u = model.load_state_dict(state_dict, strict=False)
         print(f"### missing keys: {len(m)}; \n### unexpected keys: {len(u)};")

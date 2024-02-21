@@ -19,7 +19,7 @@ import torch.nn.functional as F
 
 import diffusers
 from diffusers import AutoencoderKL, DDIMScheduler, DDPMScheduler
-from diffusers.models import UNet2DConditionModel
+from diffusers.models.unets.unet_2d_condition import UNet2DConditionModel
 from diffusers.pipelines import StableDiffusionPipeline
 from diffusers.optimization import get_scheduler
 from diffusers.utils import check_min_version

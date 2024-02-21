@@ -6,12 +6,14 @@ import numpy as np
 import torch.nn.functional as F
 from torch import nn
 import torchvision
+import diffusers
+from packaging import version
 
 from diffusers.configuration_utils import ConfigMixin, register_to_config
 from diffusers import ModelMixin
 from diffusers.utils import BaseOutput
 from diffusers.utils.import_utils import is_xformers_available
-from diffusers.models.attention import CrossAttention, FeedForward
+from diffusers.models.attention import Attention, FeedForward
 
 from einops import rearrange, repeat
 import math
@@ -250,7 +252,7 @@ class PositionalEncoding(nn.Module):
         return self.dropout(x)
 
 
-class VersatileAttention(CrossAttention):
+class VersatileAttention(Attention):
     def __init__(
             self,
             attention_mode                     = None,
@@ -290,45 +292,60 @@ class VersatileAttention(CrossAttention):
 
         encoder_hidden_states = encoder_hidden_states
 
-        if self.group_norm is not None:
-            hidden_states = self.group_norm(hidden_states.transpose(1, 2)).transpose(1, 2)
-
-        query = self.to_q(hidden_states)
-        dim = query.shape[-1]
-        query = self.reshape_heads_to_batch_dim(query)
-
-        if self.added_kv_proj_dim is not None:
-            raise NotImplementedError
-
-        encoder_hidden_states = encoder_hidden_states if encoder_hidden_states is not None else hidden_states
-        key = self.to_k(encoder_hidden_states)
-        value = self.to_v(encoder_hidden_states)
-
-        key = self.reshape_heads_to_batch_dim(key)
-        value = self.reshape_heads_to_batch_dim(value)
-
-        if attention_mask is not None:
-            if attention_mask.shape[-1] != query.shape[1]:
-                target_length = query.shape[1]
-                attention_mask = F.pad(attention_mask, (0, target_length), value=0.0)
-                attention_mask = attention_mask.repeat_interleave(self.heads, dim=0)
-
-        # attention, what we cannot get enough of
-        if self._use_memory_efficient_attention_xformers:
-            hidden_states = self._memory_efficient_attention_xformers(query, key, value, attention_mask)
-            # Some versions of xformers return output in fp32, cast it back to the dtype of the input
-            hidden_states = hidden_states.to(query.dtype)
+        if version.parse(diffusers.__version__) > version.parse("0.11.1"):
+            hidden_states = self.processor(self, hidden_states, encoder_hidden_states)
         else:
-            if self._slice_size is None or query.shape[0] // self._slice_size == 1:
-                hidden_states = self._attention(query, key, value, attention_mask)
+            if self.group_norm is not None:
+                hidden_states = self.group_norm(hidden_states.transpose(1, 2)).transpose(1, 2)
+
+            query = self.to_q(hidden_states)
+            dim = query.shape[-1]
+            query = self.head_to_batch_dim(query)
+
+            if self.added_kv_proj_dim is not None:
+                raise NotImplementedError
+
+            encoder_hidden_states = encoder_hidden_states if encoder_hidden_states is not None else hidden_states
+            key = self.to_k(encoder_hidden_states)
+            value = self.to_v(encoder_hidden_states)
+
+            key = self.head_to_batch_dim(key)
+            value = self.head_to_batch_dim(value)
+
+            if attention_mask is not None:
+                if attention_mask.shape[-1] != query.shape[1]:
+                    target_length = query.shape[1]
+                    attention_mask = F.pad(attention_mask, (0, target_length), value=0.0)
+                    attention_mask = attention_mask.repeat_interleave(self.heads, dim=0)
+
+            # attention, what we cannot get enough of
+            
+                if self._use_memory_efficient_attention_xformers:
+                    hidden_states = self._memory_efficient_attention_xformers(query, key, value, attention_mask)
+                    # Some versions of xformers return output in fp32, cast it back to the dtype of the input
+                    hidden_states = hidden_states.to(query.dtype)
+                else:
+                    if self._slice_size is None or query.shape[0] // self._slice_size == 1:
+                        hidden_states = self._attention(query, key, value, attention_mask)
+                    else:
+                        hidden_states = self._sliced_attention(query, key, value, sequence_length, dim, attention_mask)
             else:
-                hidden_states = self._sliced_attention(query, key, value, sequence_length, dim, attention_mask)
+                #if "xformers" in self.processor.__class__.__name__.lower():
+                #    hidden_states = xformers.ops.memory_efficient_attention(query, key, value, attention_mask)
+                #    # Some versions of xformers return output in fp32, cast it back to the dtype of the input
+                #    hidden_states = hidden_states.to(query.dtype)
+                #else:
+                hidden_states = F.scaled_dot_product_attention(
+                    query, key, value, attn_mask=attention_mask, dropout_p=0.0, is_causal=False
+                )
+                hidden_states = hidden_states.transpose(1, 2).reshape(batch_size, -1, attn.heads * head_dim)
+            hidden_states = hidden_states.to(query.dtype)
 
-        # linear proj
-        hidden_states = self.to_out[0](hidden_states)
+            # linear proj
+            hidden_states = self.to_out[0](hidden_states)
 
-        # dropout
-        hidden_states = self.to_out[1](hidden_states)
+            # dropout
+            hidden_states = self.to_out[1](hidden_states)
 
         if self.attention_mode == "Temporal":
             hidden_states = rearrange(hidden_states, "(b d) f c -> (b f) d c", d=d)
