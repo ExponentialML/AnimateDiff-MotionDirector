@@ -44,7 +44,7 @@ git clone https://huggingface.co/runwayml/stable-diffusion-v1-5 models/StableDif
 ### Download V3 Motion Module
 ```
 git lfs install
-https://huggingface.co/guoyww/animatediff/blob/main/v3_sd15_mm.ckpt
+git clone https://huggingface.co/guoyww/animatediff/blob/main/v3_sd15_mm.ckpt
 ```
 
 ## Training Instuctions
