@@ -48,7 +48,7 @@ train_data:
   sample_start_idx: 0
 
   # Used for 'folder'. The rate at which your frames are sampled.
-  fps: 0
+  fps: 8
 
   # For 'single_video' and 'json'. The number of frames to "step" (1,2,3,4) (frame_step=2) -> (1,3,5,7, ...).  
   frame_step: 3
@@ -79,7 +79,7 @@ validation_data:
 
 lora_name: ""
 use_motion_lora_format: True
-lora_rank: 32
+lora_rank: 24
 lora_unet_dropout: 0.1
 single_spatial_lora: True
 train_sample_validation: False
